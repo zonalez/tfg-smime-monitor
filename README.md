@@ -1,4 +1,4 @@
-  
+ 
 
 # Prototipo TFG: Control de Seguridad en Correo Electrónico
 
@@ -61,12 +61,12 @@ cd  tfg-smime-monitor
 #### 2. Preparar el Entorno Python
 
   
-
+```
 Bash
 
   
 
-```
+
 
 # Crear un entorno virtual
 
@@ -97,12 +97,12 @@ pip3 install -r requirements.txt
 (Nota: El archivo `schema.sql` debe ser creado con la definición de las tablas `CERTIFICADOS` y `EVENTOS_CORREO` ).
 
   
-
+```
 Bash
 
   
 
-```
+
 
 # Crear la base de datos y las tablas base
 
@@ -127,12 +127,12 @@ sqlite3 tfg_security.db "ALTER TABLE EVENTOS_CORREO ADD COLUMN subject TEXT"
 La API necesita una CA y claves de receptor para funcionar. _(Asegúrate de tener `openssl` instalado: `sudo apt install openssl`)_
 
   
-
+```
 Bash
 
   
 
-```
+
 
 # 1. Crear la CA de Prueba
 
@@ -189,12 +189,12 @@ python3 api_verifier.py
 #### 6. Iniciar n8n (Motor de Automatización)
 
   
-
+```
 Bash
 
   
 
-```
+
 
 # Crear la carpeta de datos persistentes
 
@@ -237,12 +237,12 @@ Estos comandos simulan los 3 casos de uso enviados directamente a la API (saltá
 **(¡Asegúrate de que la API esté corriendo en `http://<tu-ip>:5000`!)**
 
   
+```
 
 Bash
 
   
 
-```
 
 # TEST A: Correo NO Firmado (Texto Plano)
 
