@@ -1,0 +1,22 @@
+# Entorno virtual de Python
+venv/
+
+# Archivos de base de datos
+*.db
+
+# Archivos de claves privadas y certificados P12
+# ¡NUNCA subas claves privadas a GitHub!
+*.key
+*.pem
+*.p12
+
+# Excepción: ¡SÍ queremos subir la CA pública y los certificados de prueba!
+!Test_CA_Cert.pem
+!receptor_cert.pem
+
+# Emails de prueba (EML)
+*.eml
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc

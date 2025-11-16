@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard S/MIME - TFG</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 20px; }
+        h1 { color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        h2 { border-bottom: 1px solid #444; padding-bottom: 8px; margin-top: 40px; }
+        
+        /* --- Contenedor de KPIs (con Gráfico) --- */
+        .kpi-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* 2/3 para KPIs, 1/3 para el gráfico */
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .kpi-box { background-color: #333; border: 1px solid #555; border-radius: 8px; padding: 20px; text-align: center; }
+        .kpi-value { font-size: 3em; font-weight: bold; color: #fff; }
+        .kpi-label { font-size: 1.1em; color: #aaa; margin-top: 10px; }
+
+        /* --- Estilo del Gráfico de Torta --- */
+        .chart-container {
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 8px;
+            padding: 20px;
+            height: 300px; /* Altura fija para el gráfico */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Estilo de la Tabla --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th, td { border: 1px solid #555; padding: 12px; text-align: left; white-space: nowrap; }
+        th { background-color: #4CAF50; color: #000; }
+        
+        /* Permitir que Asunto y Destinatario ocupen más espacio */
+        td.expand { white-space: normal; word-break: break-all; }
+        td.error { color: #FF6B6B; font-weight: bold; }
+        td.success { color: #6BFFB8; }
+        td.neutral { color: #aaa; }
+    </style>
+</head>
+<body>
+    <h1>Dashboard Ejecutivo S/MIME</h1>
+    
+    <div class="kpi-container">
+        <div class="kpi-grid">
+            <div class="kpi-box">
+                <div class="kpi-value">{{ total_eventos }}</div>
+                <div class="kpi-label">Eventos Totales</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-value">{{ total_errores }}</div>
+                <div class="kpi-label">Total Errores/Alertas</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-value">{{ pct_firmados }}%</div>
+                <div class="kpi-label">Correos Firmados</div>
+            </div>
+            <div class="kpi-box">
+                <div class="kpi-value">{{ pct_cifrados }}%</div>
+                <div class="kpi-label">Correos Cifrados</div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="firmadosChart"></canvas>
+        </div>
+    </div>
+
+    <h2>Registros Recientes</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Remitente</th>
+                <th>Destinatario(s)</th> <th>Asunto</th>         <th>Firmado</th>
+                <th>Válida</th>
+                <th>Cifrado</th>
+                <th>Descifrado OK</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for evento in eventos %}
+            <tr>
+                <td class="neutral">{{ evento.id }}</td>
+                <td class="expand">{{ evento.remitente }}</td>
+                <td class="expand">{{ evento.destinatario }}</td> <td class="expand">{{ evento.subject }}</td>       <td class="{{ 'success' if evento.firmado else 'neutral' }}">{{ 'Sí' if evento.firmado else 'No' }}</td>
+                <td class="{{ 'success' if evento.firma_valida else 'neutral' }}">{{ 'Sí' if evento.firma_valida else 'No' }}</td>
+                <td class="{{ 'success' if evento.cifrado else 'neutral' }}">{{ 'Sí' if evento.cifrado else 'No' }}</td>
+                <td class="{{ 'success' if evento.descifrado_ok else 'neutral' }}">{{ 'Sí' if evento.descifrado_ok else 'No' }}</td>
+                <td class="{{ 'error' if evento.error_codigo else 'success' }}">{{ evento.error_codigo if evento.error_codigo else 'OK' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Obtener los datos pasados desde Flask/Pandas
+        const pctFirmados = {{ pct_firmados }};
+        const pctNoFirmados = 100 - pctFirmados;
+        const totalErrores = {{ total_errores }};
+
+        // Configurar el gráfico de torta
+        const ctx = document.getElementById('firmadosChart').getContext('2d');
+        const firmadosChart = new Chart(ctx, {
+            type: 'doughnut', // Gráfico de Torta (dona)
+            data: {
+                labels: ['Firmados Válidos', 'No Firmados / Errores'],
+                datasets: [{
+                    data: [pctFirmados, pctNoFirmados],
+                    backgroundColor: [
+                        'rgba(76, 175, 80, 0.8)', // Verde (OK)
+                        'rgba(255, 107, 107, 0.8)' // Rojo (Error)
+                    ],
+                    borderColor: [
+                        '#4CAF50',
+                        '#FF6B6B'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: '#e0e0e0' // Color del texto de la leyenda
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Cumplimiento de Firma',
+                        color: '#ffffff'
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>

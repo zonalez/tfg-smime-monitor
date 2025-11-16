@@ -1,0 +1,1 @@
+sqlite3 tfg_security.db "ALTER TABLE EVENTOS_CORREO ADD COLUMN subject TEXT"

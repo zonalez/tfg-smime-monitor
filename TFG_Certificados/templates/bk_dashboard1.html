@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard S/MIME - TFG</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #1a1a1a; color: #e0e0e0; margin: 20px; }
+        h1 { color: #4CAF50; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .kpi-box { background-color: #333; border: 1px solid #555; border-radius: 8px; padding: 20px; text-align: center; }
+        .kpi-value { font-size: 3em; font-weight: bold; color: #fff; }
+        .kpi-label { font-size: 1.1em; color: #aaa; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th, td { border: 1px solid #555; padding: 12px; text-align: left; }
+        th { background-color: #4CAF50; color: #000; }
+        td.error { color: #FF6B6B; }
+        td.success { color: #6BFFB8; }
+    </style>
+</head>
+<body>
+    <h1>Dashboard de Monitoreo S/MIME</h1>
+    
+    <div class="kpi-grid">
+        <div class="kpi-box">
+            <div class="kpi-value">{{ total_eventos }}</div>
+            <div class="kpi-label">Eventos Totales</div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-value">{{ pct_firmados }}%</div>
+            <div class="kpi-label">Correos Firmados</div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-value">{{ pct_cifrados }}%</div>
+            <div class="kpi-label">Correos Cifrados</div>
+        </div>
+        <div class="kpi-box">
+            <div class="kpi-value">{{ total_errores }}</div>
+            <div class="kpi-label">Total Errores/Alertas</div>
+        </div>
+    </div>
+
+    <h2>Registros Recientes</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Remitente</th>
+                <th>Fecha</th>
+                <th>Firmado</th>
+                <th>Válida</th>
+                <th>Cifrado</th>
+                <th>Descifrado OK</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for evento in eventos %}
+            <tr>
+                <td>{{ evento.id }}</td>
+                <td>{{ evento.remitente }}</td>
+                <td>{{ evento.fecha_hora }}</td>
+                <td>{{ 'Sí' if evento.firmado else 'No' }}</td>
+                <td class="{{ 'success' if evento.firma_valida else '' }}">{{ 'Sí' if evento.firma_valida else 'No' }}</td>
+                <td>{{ 'Sí' if evento.cifrado else 'No' }}</td>
+                <td class="{{ 'success' if evento.descifrado_ok else '' }}">{{ 'Sí' if evento.descifrado_ok else 'No' }}</td>
+                <td class="{{ 'error' if evento.error_codigo else 'success' }}">{{ evento.error_codigo if evento.error_codigo else 'OK' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

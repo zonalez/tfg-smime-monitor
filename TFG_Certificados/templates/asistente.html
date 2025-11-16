@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente de Certificados S/MIME</title>
+    <style>
+        /* --- Estilo de tu TFG  --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .wizard-container {
+            background-color: #2b2b2b;
+            border: 1px solid #444;
+            border-radius: 12px;
+            width: 800px;
+            display: flex;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* --- Barra lateral de Pasos --- */
+        .wizard-steps {
+            width: 200px;
+            padding: 30px;
+            border-right: 1px solid #444;
+            flex-shrink: 0;
+        }
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            opacity: 0.4;
+        }
+        .step.active {
+            opacity: 1;
+        }
+        .step-number {
+            background-color: #3b82f6; /* Azul */
+            color: #fff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        .step.active .step-number {
+            background-color: #3b82f6;
+        }
+        .step-label {
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        /* --- Contenido del Formulario --- */
+        .wizard-content {
+            padding: 30px 40px;
+            width: 100%;
+        }
+        
+        h2 {
+            color: #fff;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .step-subtitle {
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+            border-bottom: 1px solid #444;
+            padding-bottom: 15px;
+        }
+
+        /* --- Estilo de Campos de Formulario --- */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #ccc;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 95%;
+            padding: 12px;
+            background-color: #1a1a1a;
+            border: 1px solid #555;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 1em;
+        }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 5px rgba(59,130,246,0.5);
+        }
+        
+        .button-container {
+            text-align: right;
+            margin-top: 30px;
+        }
+        button {
+            background-color: #3b82f6;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="wizard-container">
+        <div class="wizard-steps">
+            <div class="step active">
+                <div class="step-number">1</div>
+                <div class="step-label">Generar Clave</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-label">Validación y Descarga</div>
+            </div>
+        </div>
+
+        <div class="wizard-content">
+            <form action="/generar-certificado" method="POST">
+                <h2>Paso 1 — Generar clave y CSR</h2>
+                <div class="step-subtitle">
+                    Complete sus datos para generar el par de claves y la solicitud.
+                </div>
+
+                <div class="form-group">
+                    <label for="nombre">Nombre y Apellido (CN) *</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej: Emiliano Gonzalez Luparo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email (Prototipo Gmail/Outlook) *</label>
+                    <input type="email" id="email" name="email" placeholder="Ej: zonalez1@gmail.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pin">PIN / Contraseña de clave privada *</label>
+                    <input type="password" id="pin" name="pin" required>
+                </div>
+                
+                <div class="button-container">
+                    <button type="submit">Generar y Descargar Certificado</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
