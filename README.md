@@ -18,7 +18,7 @@ El objetivo es demostrar un sistema de **Control De Seguridad En Correo Electró
 
   
 
-### 🛠️ Stack Tecnológico
+### Stack Tecnológico
 
 *  **API Backend:** Python 3 con Flask
 
@@ -36,7 +36,7 @@ El objetivo es demostrar un sistema de **Control De Seguridad En Correo Electró
 
   
 
-### ⚙️ Instrucciones de Instalación (Entorno de Prueba)
+### Instrucciones de Instalación (Entorno de Prueba)
 
   
 
@@ -164,27 +164,24 @@ sudo docker run -d -p 5678:5678 --name n8n_tfg -v ~/n8n_data:/home/node/.n8n n8n
 
 ----------
 
-### 🧪 Comandos de Prueba (Simulación `curl`)
+### Comandos de Prueba (Simulación `curl`)
 
-Estos comandos simulan los 3 casos de uso enviados directamente a la API (saltándose n8n).
+Estos comandos simulan los 3 casos de uso.
 
-**(¡Asegúrate de que la API esté corriendo en `http://<tu-ip>:5000`!)**
-
-  
 ```bash
 # TEST A: Correo NO Firmado (Texto Plano)
 
-curl -X POST -H "Content-Type: text/plain" --data "Prueba de correo no firmado" "http://localhost:5000/verify-email"
+curl -X POST -H "Content-Type: text/plain" --data "Prueba de correo no firmado" "http://localhost:5678/webhook/tfg-webhook"
   
 
 # TEST B: Correo FIRMADO (Necesita 'test_email.eml')
 
-curl -X POST -H "Content-Type: application/octet-stream" --data-binary "@test_email.eml" "http://localhost:5000/verify-email"
+curl -X POST -H "Content-Type: application/octet-stream" --data-binary "@test_email.eml" "http://localhost:5678/webhook/tfg-webhook"
   
 
 # TEST C: Correo FIRMADO y CIFRADO (Necesita 'test_cifrado.eml')
 
-curl -X POST -H "Content-Type: application/octet-stream" --data-binary "@test_cifrado.eml" "http://localhost:5000/verify-email"
+curl -X POST -H "Content-Type: application/octet-stream" --data-binary "@test_cifrado.eml" "http://localhost:5678/webhook/tfg-webhook"
 ```
 
   
@@ -192,7 +189,7 @@ curl -X POST -H "Content-Type: application/octet-stream" --data-binary "@test_ci
 ----------
   
 
-### 🔗 Endpoints del Prototipo
+### Endpoints del Prototipo
 
 
 - **`POST /verify-email`**: Recibe el correo crudo, lo verifica, lo descifra y lo registra en la DB.
